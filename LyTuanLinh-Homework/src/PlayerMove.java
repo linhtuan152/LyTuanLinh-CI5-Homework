@@ -3,16 +3,16 @@ import java.util.Random;
 public class PlayerMove {
 
     public Vector2D velocity;
-    public double angle;
+    public double angle = 0.0;
     private Random random;
 
     public PlayerMove() {
-        this.velocity = new Vector2D(2, 2);
+        this.velocity = new Vector2D(3.5f, 0);
         this.random = new Random();
     }
 
     public void run(Player player) {
-        this.velocity.set(this.velocity.rotate(this.angle));
+        //this.velocity.set(this.velocity.rotate(this.angle));
         player.position.addUp(this.velocity);
         if (player.position.x > 1024) {
             player.position.set(0, this.random.nextInt(600));

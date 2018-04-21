@@ -28,7 +28,6 @@ public class GameCanvas extends JPanel {
         this.stars = new ArrayList<>();
         this.random = new Random();
         this.background = new Background();
-        background.position.set(0,0);
         this.player = new Player();
         this.player.position.set(200, 200);
         this.enemies = new ArrayList<>();
@@ -57,6 +56,7 @@ public class GameCanvas extends JPanel {
     }
 
     public void runAll() {
+        this.background.run();
         // cap nhat tat ca moi thu
         this.createStar();
         this.stars.forEach(star -> star.run());
@@ -68,8 +68,7 @@ public class GameCanvas extends JPanel {
     private void createEnemy() {
         if (this.countEnemy == 50) {
             Enemy enemy = new Enemy();
-            enemy.position.set(this.random.nextInt(1024), this.random.nextInt(600));
-            enemy.velocity.set(this.random.nextInt(2) + 1, 0);
+            enemy.position.set(new Vector2D(this.random.nextInt(1024), this.random.nextInt(600)));
             this.enemies.add(enemy);
             this.countEnemy = 0;
         } else {

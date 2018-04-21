@@ -1,15 +1,20 @@
 import java.awt.*;
 
-public class BackgroundRenderer {
-    public Vector2D position;
+public class BackgroundRenderer implements Renderer {
 
+    private Color color;
+    private int width;
+    private int height;
 
-    public BackgroundRenderer (Vector2D position) {
-        this.position = position;
+    public BackgroundRenderer(Color color, int width, int height) {
+        this.color = color;
+        this.width = width;
+        this.height = height;
     }
 
-    public void render(Graphics graphics) {
-        graphics.setColor(Color.BLACK);
-        graphics.fillRect((int) this.position.x,(int) this.position.y, 1024, 600);
+    @Override
+    public void render(Graphics graphics, Vector2D position) {
+        graphics.setColor(this.color);
+        graphics.fillRect((int)position.x, (int) position.y, this.width , this.height);
     }
 }
