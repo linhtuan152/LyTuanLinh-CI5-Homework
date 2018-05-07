@@ -1,19 +1,23 @@
 package game.player;
 
 import base.GameObject;
-import base.GameObjectManager;
 import base.Vector2D;
 import game.enemy.Enemy;
+import game.particle.Particle;
 import physic.BoxCollider;
+import physic.HitObject;
+import physic.PhysicBody;
+import physic.RunHitObject;
 import renderer.PolygonRenderer;
 
 import java.awt.*;
 
-public class Player extends GameObject {
+public class Player extends GameObject implements PhysicBody, HitObject {
 
     public PlayerMove playerMove;
     public PlayerShoot playerShoot;
-    public BoxCollider boxCollider;
+    private RunHitObject runHitObject;
+    private BoxCollider boxCollider;
 
     public Player() {
         this.position = new Vector2D();
@@ -24,31 +28,32 @@ public class Player extends GameObject {
         );
         this.playerMove = new PlayerMove();
         this.playerShoot = new PlayerShoot();
-        this.boxCollider = new BoxCollider(20,20);
+        this.boxCollider = new BoxCollider(20, 16);
+        this.runHitObject = new RunHitObject(
+                Enemy.class
+        );
     }
 
     @Override
     public void run() {
         super.run();
         this.playerMove.run(this);
-        this.boxCollider.position.set(this.position);
-        ((PolygonRenderer)this.renderer).angle = this.playerMove.angle;
+        this.boxCollider.position.set(this.position.x - 10, this.position.y - 8);
+        ((PolygonRenderer) this.renderer).angle = this.playerMove.angle;
         this.playerShoot.run(this);
-        checkCollision();
+        this.runHitObject.run(this);
+        Particle.effectSmoke(this.position, this.playerMove.velocity.normalize().multiply(-3.5f), 10, 10, Color.ORANGE, 7, 15);
+
     }
 
-    private void checkCollision() {
-        Enemy enemy = GameObjectManager.instance.checkCollision(this.boxCollider);
-        if (enemy != null) {
-            enemy.getHit();
-            this.getHit();
-            System.exit(0);
-        }
-    }
-
-    private void getHit() {
-        System.out.println("Hit Player");
+    @Override
+    public void getHit(GameObject gameObject) {
         this.isAlive = false;
+        Particle.explodePlayer(this.position,this.playerMove.velocity.normalize(),10,10,Color.YELLOW,6,40);
     }
 
+    @Override
+    public BoxCollider getBoxCollider() {
+        return this.boxCollider;
+    }
 }
